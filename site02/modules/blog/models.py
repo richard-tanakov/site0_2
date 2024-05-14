@@ -24,7 +24,7 @@ class Article(models.Model):
     thumbnail = models.ImageField(
         verbose_name='Превью поста',
         blank=True,
-        upload_to='image/thumbnails/',
+        upload_to='image/thumbnails/%Y/%m/%d/',
         validators=[FileExtensionValidator(
             allowed_extensions=('png', 'jpg', 'webp', 'jpeg', 'gif'))]
 
