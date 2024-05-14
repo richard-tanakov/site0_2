@@ -1,11 +1,11 @@
 from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.contrib.auth import get_user_model
-
+from mptt.models import MPTTModel, TreeForeignKey
 User = get_user_model()
 
 
-class Artecle(model.Model):
+class Article(models.Model):
     """Модель постов"""
 
     STATUS_OPTIONS = (
@@ -13,18 +13,21 @@ class Artecle(model.Model):
         ('draft', 'Черновик')
     )
     title = models.CharField(verbose_name='Заголовок', max_length=255)
-    slug = models.SlugField(
-        verbose_name="URL", max_length=255, blank=True, unique=True)
+    slug = models.CharField(
+        verbose_name="Альт. название", max_length=255, blank=True, unique=True)
+    category = TreeForeignKey('Category', on_delete=models.PROTECT,
+                              related_name='articles', verbose_name='Категория')
     short_description = models.TextField(
         verbose_name="Краткое описание", max_length=500)
     full_descriptions = models.TextField(verbose_name="полное описание")
 
     thumbnail = models.ImageField(
         verbose_name='Превью поста',
-        blank=True
+        blank=True,
         upload_to='image/thumbnails/',
         validators=[FileExtensionValidator(
-            allowed_expresions=('png', 'jpg', 'webp', 'jpeg', 'gif'))]
+            allowed_extensions=('png', 'jpg', 'webp', 'jpeg', 'gif'))]
+
     )
     status = models.CharField(
         choices=STATUS_OPTIONS, default='published', verbose_name='Статус поста', max_length=10)
@@ -40,11 +43,45 @@ class Artecle(model.Model):
     fixed = models.BooleanField(verbose_name="Зафиксировано", default=False)
 
     class Meta:
-        db_table='app_articles'
-        ordering=['-fixed','-time_create']
-        indexes= [models.Index(fileds=['-fixed','-time_create','status'])]
-        verbose_name='Статья'
-        verbose_name_plural="Статьи"
+        db_table = 'app_articles'
+        ordering = ['-fixed', '-time_create']
+        indexes = [models.Index(fields=['-fixed', '-time_create', 'status'])]
+        verbose_name = 'Статья'
+        verbose_name_plural = "Статьи"
 
     def __str__(self):
+        return self.title
+
+
+class Category(MPTTModel):
+
+    """ Модель категорий с вложеностью """
+    title = models.CharField(max_length=255, verbose_name='Название категорий')
+    slug = models.SlugField(
+        max_length=255, verbose_name="URL категорий", blank=True)
+    description = models.TextField(verbose_name='Описание')
+    parent = TreeForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        db_index=True,
+        related_name='children',
+        verbose_name="Родительская категория"
+    )
+
+    class MPTTMeta:
+        """ Сортировка по вложенности """
+        order_insertion_by = ('title',)
+
+    class Meta:
+        """ 
+        Сортировка,названия модели в админ панели,таблица с данными    
+         """
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
+        db_table = 'app_categories'
+
+    def __str__(self):
+        """ Возвраение заголовка статьи """
         return self.title
