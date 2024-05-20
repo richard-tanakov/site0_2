@@ -4,20 +4,38 @@
 
 {% block content %}
 
-    {% for article in articles %}
+{% for article in articles %}
 
-        <img src={{ article.thumbnail.url }} alt={{ article.title }} width="150"/>
+<div class="card mb-3">
 
-        <strong>{{ article.title }}</strong>
+    <div class="row">
 
-        <p>{{ article.short_description }}</p>
+        <div class="col-4">
 
-        <small>{{ article.time_create }}</small>
+            <img src="{{ article.thumbnail.url }}" class="card-img-top" alt="{{ article.title }}">
 
-        <hr>
+        </div>
 
-        <span>{{ article.category.title }}</span>
+        <div class="col-8">
 
-    {% endfor %}
+            <div class="card-body">
+
+                <h5 class="card-title">{{ article.title }}</h5>
+
+                <div class="card-subtitle">{{ article.author.username }}</div>
+
+                <p class="card-text">{{ article.short_description }}</p>
+
+                <a href="{% url 'articles_by_category' article.category.slug %}" class="btn btn-primary">{{article.category.title }}</a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
 
 {% endblock %}

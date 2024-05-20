@@ -34,6 +34,7 @@ class CategoryAdmin(DraggableMPTTAdmin):
 
     )
 
+@admin.register(Article)
+class ArticleAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('title',)}    
 
-
-admin.site.register(Article)

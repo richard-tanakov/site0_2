@@ -1,11 +1,19 @@
 from django.urls import path
 
 
-from .views import articles_list
+from django.urls import path
+
+
+from .views import ArticleListView, ArticleDetailView, ArticleByCategoryListView
 
 
 urlpatterns = [
 
-    path('', articles_list, name='home'),
+    path('', ArticleListView.as_view(), name='home'),
+
+    path('articles/<str:slug>/', ArticleDetailView.as_view(), name='articles_detail'),
+
+    path('category/<str:slug>/', ArticleByCategoryListView.as_view(),
+         name="articles_by_category"),
 
 ]

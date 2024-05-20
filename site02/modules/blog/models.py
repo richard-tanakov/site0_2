@@ -2,6 +2,9 @@ from django.db import models
 from django.core.validators import FileExtensionValidator
 from django.contrib.auth import get_user_model
 from mptt.models import MPTTModel, TreeForeignKey
+from django.urls import reverse
+from modules.services.utils import unique_slugify
+
 User = get_user_model()
 
 
@@ -69,7 +72,10 @@ class Category(MPTTModel):
         related_name='children',
         verbose_name="Родительская категория"
     )
+    def get_absolute_url(self):
 
+        return reverse('articles_by_category', kwargs={'slug': self.slug})
+    
     class MPTTMeta:
         """ Сортировка по вложенности """
         order_insertion_by = ('title',)
@@ -83,5 +89,14 @@ class Category(MPTTModel):
         db_table = 'app_categories'
 
     def __str__(self):
-        """ Возвраение заголовка статьи """
+        """ Возвраoение заголовка статьи """
         return self.title
+    def get_absolute_url(self):
+        return reverse ('articles_detail', kwargs={'slug': self.slug})
+    
+    def save(self,*args,**kwargs):
+        """ Сохранение пустых полей"""
+        if not self.slug:
+            self.slug = unique_slugify(self,self.title)
+        super().save(*args,**kwargs)
+    
