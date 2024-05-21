@@ -15,7 +15,7 @@ class Article(models.Model):
 
         def all(self):
             """ SQL запрос с фильтрацией """
-            return self.get_queryset().filter(status='published')
+            return self.get_queryset().select_related('author','category').filter(status='published')
 
     STATUS_OPTIONS = (
         ('published', 'Опубликовано'),
