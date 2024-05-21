@@ -1,8 +1,16 @@
 from typing import Any
 from django.views.generic import ListView, DetailView
-
+from django.shortcuts import render
+from django.core.paginator import Paginator
 
 from .models import Article, Category
+
+
+def articles_list(request, page):
+    articles = Article.objects.all()
+    paginator = Paginator(articles, per_page=2)
+    context = {'page_obj': page_object}
+    return render(request, 'blog/articles_func_list.html', context)
 
 
 class ArticleListView(ListView):

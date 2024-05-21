@@ -4,7 +4,7 @@ from django.urls import path
 from django.urls import path
 
 
-from .views import ArticleListView, ArticleDetailView, ArticleByCategoryListView
+from .views import ArticleListView, ArticleDetailView, ArticleByCategoryListView, articles_list
 
 
 urlpatterns = [
@@ -15,5 +15,6 @@ urlpatterns = [
 
     path('category/<str:slug>/', ArticleByCategoryListView.as_view(),
          name="articles_by_category"),
+    path('articles/<int:page>/',articles_list, name='articles_by_page'),
 
 ]
