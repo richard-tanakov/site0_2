@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'mptt',
     'modules.services',
     'debug_toolbar',
+    'modules.system.apps.SystemConfig'
 
 ]
 
