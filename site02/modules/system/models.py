@@ -38,8 +38,8 @@ class Profile(models.Model):
 
     birth_date = models.DateField(
         null=True, blank=True, verbose_name='Дата рождения')
-    @property
 
+    @property
     def get_avatar(self):
 
         if self.avatar:

@@ -13,6 +13,8 @@ urlpatterns = [
 
     path('', include('modules.blog.urls')),
 
+    path('', include('modules.system.urls')),
+
 ]
 
 
